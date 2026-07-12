@@ -196,6 +196,16 @@ const galleryData = JSON.stringify(fullSizePhotos).replace(/</g, '\\u003c');
 
 		let currentIndex = 0;
 		let fadeTimeout: ReturnType<typeof setTimeout> | undefined;
+		const preloaded = new Set<string>();
+
+		function preload(src: string) {
+			if (preloaded.has(src)) return;
+			preloaded.add(src);
+			const img = new Image();
+			img.src = src;
+		}
+
+		photos.forEach((photo) => preload(photo.src));
 
 		function render() {
 			const photo = photos[currentIndex];
@@ -215,7 +225,13 @@ const galleryData = JSON.stringify(fullSizePhotos).replace(/</g, '\\u003c');
 			imageEl.classList.add('is-fading');
 			fadeTimeout = setTimeout(() => {
 				render();
-				imageEl?.classList.remove('is-fading');
+				if (!imageEl) return;
+				const reveal = () => imageEl?.classList.remove('is-fading');
+				if (imageEl.complete) {
+					reveal();
+				} else {
+					imageEl.addEventListener('load', reveal, { once: true });
+				}
 			}, 200);
 		}
 
