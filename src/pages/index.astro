@@ -1,11 +1,45 @@
 ---
-import Welcome from '../components/Welcome.astro';
+import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
+import ChapterCard from '../components/ChapterCard.astro';
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const chapters = (await getCollection('chapters')).sort((a, b) => a.data.order - b.data.order);
 ---
 
-<Layout>
-	<Welcome />
+<Layout title="Sébastien Vasseur — Photographies">
+	<section class="hero">
+		<h1>Sébastien Vasseur</h1>
+		<p>Photographies</p>
+	</section>
+
+	<section class="chapters-grid">
+		{chapters.map((chapter, index) => <ChapterCard chapter={chapter} index={index} />)}
+	</section>
 </Layout>
+
+<style>
+	.hero {
+		padding: 3rem 1.5rem 2.5rem;
+		text-align: center;
+	}
+
+	.hero h1 {
+		margin: 0;
+		font-size: clamp(2rem, 5vw, 3rem);
+	}
+
+	.hero p {
+		margin: 0.5rem 0 0;
+		color: var(--fg-muted);
+		text-transform: uppercase;
+		letter-spacing: 0.2em;
+		font-size: 0.85rem;
+	}
+
+	.chapters-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+		gap: 1px;
+		padding: 0 1.5rem 3rem;
+	}
+</style>

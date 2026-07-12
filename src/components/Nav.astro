@@ -1,0 +1,72 @@
+---
+import { getCollection } from 'astro:content';
+
+const chapters = (await getCollection('chapters')).sort((a, b) => a.data.order - b.data.order);
+const path = Astro.url.pathname;
+---
+
+<header class="site-header" transition:persist>
+	<a class="brand" href="/">Sébastien Vasseur</a>
+	<nav aria-label="Chapitres">
+		<ul>
+			{
+				chapters.map((chapter) => {
+					const href = `/chapitres/${chapter.id}/`;
+					const active = path === href;
+					return (
+						<li>
+							<a href={href} aria-current={active ? 'page' : undefined}>
+								{chapter.data.title}
+							</a>
+						</li>
+					);
+				})
+			}
+		</ul>
+	</nav>
+</header>
+
+<style>
+	.site-header {
+		position: sticky;
+		top: 0;
+		z-index: 10;
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.75rem 1.5rem;
+		padding: 1.25rem 1.5rem;
+		background: linear-gradient(to bottom, rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0));
+		backdrop-filter: blur(4px);
+	}
+
+	.brand {
+		font-family: Georgia, 'Times New Roman', serif;
+		font-size: 1.1rem;
+		letter-spacing: 0.05em;
+		text-transform: uppercase;
+	}
+
+	nav ul {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1.5rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+	nav a {
+		font-size: 0.9rem;
+		letter-spacing: 0.03em;
+		text-transform: uppercase;
+		color: var(--fg-muted);
+		transition: color 0.2s ease;
+	}
+
+	nav a:hover,
+	nav a[aria-current='page'] {
+		color: var(--fg);
+	}
+</style>

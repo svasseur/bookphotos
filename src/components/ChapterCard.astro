@@ -1,0 +1,67 @@
+---
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+	chapter: CollectionEntry<'chapters'>;
+	index?: number;
+}
+
+const { chapter, index = 0 } = Astro.props;
+const cover = chapter.data.photos[0];
+---
+
+<a class="chapter-card" href={`/chapitres/${chapter.id}/`} style={`animation-delay: ${index * 90}ms`}>
+	<div class="chapter-card-media">
+		<Image src={cover.src} alt={cover.alt} width={900} loading={index < 2 ? 'eager' : 'lazy'} />
+	</div>
+	<span class="chapter-card-title">{chapter.data.title}</span>
+</a>
+
+<style>
+	.chapter-card {
+		position: relative;
+		display: block;
+		overflow: hidden;
+		background: #0a0a0a;
+		opacity: 0;
+		animation: fade-in 0.6s ease forwards;
+	}
+
+	.chapter-card-media {
+		aspect-ratio: 4 / 3;
+		overflow: hidden;
+	}
+
+	.chapter-card-media :global(img) {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		transition: transform 0.8s ease;
+	}
+
+	.chapter-card:hover .chapter-card-media :global(img) {
+		transform: scale(1.04);
+	}
+
+	.chapter-card-title {
+		position: absolute;
+		inset: auto 0 0 0;
+		padding: 1.25rem 1.5rem;
+		background: linear-gradient(to top, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0));
+		font-family: Georgia, 'Times New Roman', serif;
+		font-size: 1.3rem;
+		letter-spacing: 0.03em;
+	}
+
+	@keyframes fade-in {
+		from {
+			opacity: 0;
+			transform: translateY(12px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+</style>
