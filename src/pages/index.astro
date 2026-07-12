@@ -8,8 +8,7 @@ const chapters = (await getCollection('chapters')).sort((a, b) => a.data.order -
 
 <Layout title="Sébastien Vasseur — Photographies">
 	<section class="hero">
-		<h1>Sébastien Vasseur</h1>
-		<p>Photographies</p>
+		<h1>Photographies</h1>
 	</section>
 
 	<section class="chapters-grid">
@@ -25,21 +24,25 @@ const chapters = (await getCollection('chapters')).sort((a, b) => a.data.order -
 
 	.hero h1 {
 		margin: 0;
-		font-size: clamp(2rem, 5vw, 3rem);
-	}
-
-	.hero p {
-		margin: 0.5rem 0 0;
 		color: var(--fg-muted);
 		text-transform: uppercase;
 		letter-spacing: 0.2em;
 		font-size: 0.85rem;
+		font-family: inherit;
+		font-weight: 400;
 	}
 
 	.chapters-grid {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+		display: flex;
 		gap: 1px;
 		padding: 0 1.5rem 3rem;
+		overflow-x: auto;
+		scroll-snap-type: x proximity;
+		scrollbar-color: var(--fg-faint) transparent;
+	}
+
+	.chapters-grid :global(.chapter-card) {
+		flex: 0 0 clamp(390px, 48vw, 570px);
+		scroll-snap-align: start;
 	}
 </style>
